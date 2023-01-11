@@ -47,6 +47,7 @@ public Action ConCmd_ReloadConfig(int client, int args) {
 
 public void OnConfigsExecuted() {
 	LoadConfig(0);
+	TF2_UpdatePlayerClassDataChanged();
 }
 
 public void LoadConfig(int replyTo) {
@@ -99,8 +100,8 @@ public void LoadConfig(int replyTo) {
 				data.Store(clz);
 			}
 			
-			if (replyTo) ReplyToCommand(replyTo, "[TF2 PlayerClassData] %s : spd %.0f hp %i arm %i ammo [ %i %i %i %i %i %i %i ]", tf2classnames[clz], data.maxSpeed, data.maxHealth, data.maxArmor, data.maxAmmo[0], data.maxAmmo[1], data.maxAmmo[2], data.maxAmmo[3], data.maxAmmo[4], data.maxAmmo[5], data.maxAmmo[6]);
-			else PrintToServer("[TF2 PlayerClassData] %s : spd %.0f hp %i arm %i ammo [ %i %i %i %i %i %i %i ]", tf2classnames[clz], data.maxSpeed, data.maxHealth, data.maxArmor, data.maxAmmo[0], data.maxAmmo[1], data.maxAmmo[2], data.maxAmmo[3], data.maxAmmo[4], data.maxAmmo[5], data.maxAmmo[6]);
+//			if (replyTo) ReplyToCommand(replyTo, "[TF2 PlayerClassData] %s : spd %.0f hp %i arm %i ammo [ %i %i %i %i %i %i %i ]", tf2classnames[clz], data.maxSpeed, data.maxHealth, data.maxArmor, data.maxAmmo[0], data.maxAmmo[1], data.maxAmmo[2], data.maxAmmo[3], data.maxAmmo[4], data.maxAmmo[5], data.maxAmmo[6]);
+//			else PrintToServer("[TF2 PlayerClassData] %s : spd %.0f hp %i arm %i ammo [ %i %i %i %i %i %i %i ]", tf2classnames[clz], data.maxSpeed, data.maxHealth, data.maxArmor, data.maxAmmo[0], data.maxAmmo[1], data.maxAmmo[2], data.maxAmmo[3], data.maxAmmo[4], data.maxAmmo[5], data.maxAmmo[6]);
 		}
 	}
 	delete regenConfig;
