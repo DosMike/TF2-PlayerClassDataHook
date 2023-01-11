@@ -1,0 +1,51 @@
+"Games"
+{
+	"tf"
+	{
+		"Offsets"
+		{
+			//for all: unique strings are speed_max health_max armor_max
+			"TFPlayerClassData_t::m_flMaxSpeed"
+			{
+				"linux" "640"
+				"windows" "640"
+			}
+			"TFPlayerClassData_t::m_nMaxHealth"
+			{
+				"linux" "644"
+				"windows" "644"
+			}
+			//what is this for??
+			"TFPlayerClassData_t::m_nMaxArmor"
+			{
+				"linux" "648"
+				"windows" "648"
+			}
+			"TFPlayerClassData_t::m_nMaxAmmo[]"
+			{
+				"linux" "688"
+				"windows" "688"
+			}
+		}
+		"Signatures"
+		{
+			"GetPlayerClassData(int)"
+			{
+				//called in GetHandModelName(this*,int) with "models\\weapons\\c_models\\c_engineer_gunslinger.mdl"
+				//returns TFPlayerClassData_t*
+				"library" "server"
+				"linux" "_Z18GetPlayerClassDataj"
+				"windows" "\x55\x8B\xEC\x69**\xF0\x08\x00\x00\xA1****\x83\xC0\x0C\x03\xC1\x5D\xC3"
+				//LKASM 55 8b ec 69 4d 08 f0 08 00 00 a1 68 fa 99 10 83 c0 0c 03 c1 5d c3
+			}
+			"CTFPlayer::TeamFortress_SetSpeed()"
+			{
+				//update the players maxspeed now. called as last non-virtual function in PrimaryAttack with unique string "Weapon_CompoundBow.SinglePull"
+				"library" "server"
+				"linux" "_ZN9CTFPlayer21TeamFortress_SetSpeedEv"
+				"windows" "\x55\x8B\xEC\xA1****\x83\xEC\x1C\x53"
+				//LKASM 55 8b ec a1 74 f4 a0 10 83 ec 1c 53
+			}
+		}
+	}
+}
