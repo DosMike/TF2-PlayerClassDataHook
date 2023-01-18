@@ -9,7 +9,7 @@
 #pragma newdecls required
 #pragma semicolon 1
 
-#define PLUGIN_VERSION "23w02a"
+#define PLUGIN_VERSION "23w03a"
 
 public Plugin myinfo = {
 	name = "[TF2] PlayerClassData Hooks",
@@ -19,13 +19,16 @@ public Plugin myinfo = {
 	url = "N/A"
 }
 
-#define TF2_NUM_AMMO_TYPES 7
+//ammo types start at 1, there are 6 (idx < 7)
+#define TF2_NUM_AMMO_TYPES 6
+#define TF2_NUM_BUILDABLE_TYPES 6
 
 enum struct PlayerClassData {
 	float maxSpeed;
 	int maxHealth;
 	int maxArmor;
 	int maxAmmo[TF2_NUM_AMMO_TYPES];
+	int buildable[TF2_NUM_BUILDABLE_TYPES];
 }
 PlayerClassData pcd_defaults[10];
 
@@ -36,6 +39,7 @@ int off_m_flMaxSpeed;
 int off_m_nMaxHealth;
 int off_m_nMaxArmor;
 int off_m_nMaxAmmo;
+int off_m_nBuildable;
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
 	CreateNative("TF2_GetPlayerClassData", Native_GetPlayerClassData);
@@ -68,6 +72,7 @@ public void OnPluginStart() {
 	off_m_nMaxHealth = data.GetOffset("TFPlayerClassData_t::m_nMaxHealth");
 	off_m_nMaxArmor = data.GetOffset("TFPlayerClassData_t::m_nMaxArmor");
 	off_m_nMaxAmmo = data.GetOffset("TFPlayerClassData_t::m_nMaxAmmo[]");
+	off_m_nBuildable = data.GetOffset("TFPlayerClassData_t::m_nBuildable[]");
 	
 	delete data;
 	
@@ -123,40 +128,74 @@ static void RestorePCD(TFClassType class) {
 static void LoadPCD(TFClassType class, PlayerClassData data) {
 	if (class == TFClass_Unknown) return;
 	Address structptr = GetPlayerClassData(view_as<int>(class));
-	data.maxSpeed = LoadFromAddress(structptr + off_m_flMaxSpeed, NumberType_Int32);
-	data.maxHealth = LoadFromAddress(structptr + off_m_nMaxHealth, NumberType_Int32);
-	data.maxArmor = LoadFromAddress(structptr + off_m_nMaxArmor, NumberType_Int32);
+	data.maxSpeed = LoadFromAddress(structptr + view_as<Address>(off_m_flMaxSpeed), NumberType_Int32);
+	data.maxHealth = LoadFromAddress(structptr + view_as<Address>(off_m_nMaxHealth), NumberType_Int32);
+	data.maxArmor = LoadFromAddress(structptr + view_as<Address>(off_m_nMaxArmor), NumberType_Int32);
 	for (int type=0; type<TF2_NUM_AMMO_TYPES; type+=1) {
-		data.maxAmmo[type] = LoadFromAddress(structptr + off_m_nMaxAmmo + 4 * type, NumberType_Int32);
+		data.maxAmmo[type] = LoadFromAddress(structptr + view_as<Address>(off_m_nMaxAmmo + 4 * type), NumberType_Int32);
+	}
+	for (int type=0; type<TF2_NUM_BUILDABLE_TYPES; type+=1) {
+		data.buildable[type] = LoadFromAddress(structptr + view_as<Address>(off_m_nBuildable + 4 * type), NumberType_Int32);
 	}
 }
 static void StorePCD(TFClassType class, PlayerClassData data) {
 	if (class == TFClass_Unknown) return;
 	Address structptr = GetPlayerClassData(view_as<int>(class));
 	if (data.maxSpeed > 520.0) data.maxSpeed = 520.0; // bigger values are not possible
-	StoreToAddress(structptr + off_m_flMaxSpeed, data.maxSpeed, NumberType_Int32, false);
-	StoreToAddress(structptr + off_m_nMaxHealth, data.maxHealth, NumberType_Int32, false);
-	StoreToAddress(structptr + off_m_nMaxArmor, data.maxArmor, NumberType_Int32, false);
+	StoreToAddress(structptr + view_as<Address>(off_m_flMaxSpeed), data.maxSpeed, NumberType_Int32, false);
+	StoreToAddress(structptr + view_as<Address>(off_m_nMaxHealth), data.maxHealth, NumberType_Int32, false);
+	StoreToAddress(structptr + view_as<Address>(off_m_nMaxArmor), data.maxArmor, NumberType_Int32, false);
 	for (int type=0; type<TF2_NUM_AMMO_TYPES; type+=1) {
-		StoreToAddress(structptr + off_m_nMaxAmmo + 4 * type, data.maxAmmo[type], NumberType_Int32, false);
+		StoreToAddress(structptr + view_as<Address>(off_m_nMaxAmmo + 4 * type), data.maxAmmo[type], NumberType_Int32, false);
+	}
+	for (int type=0; type<TF2_NUM_BUILDABLE_TYPES; type+=1) {
+		StoreToAddress(structptr + view_as<Address>(off_m_nBuildable + 4 * type), data.buildable[type], NumberType_Int32, false);
 	}
 }
 
 any Native_GetPlayerClassData(Handle plugin, int numArgs) {
 	PlayerClassData data;
 	TFClassType class = GetNativeCell(1);
+	StringMap exported = GetNativeCell(2);
 	LoadPCD(class, data);
-	int error;
-	if ((error = SetNativeArray(2, data, sizeof(PlayerClassData))) != SP_ERROR_NONE)
-		ThrowNativeError(error, "PlayerClassData array invalid or outdated");
+	exported.SetValue("__player_class__", class);
+	exported.SetValue("maxSpeed", data.maxSpeed);
+	exported.SetValue("maxHealth", data.maxHealth);
+	exported.SetValue("maxArmor", data.maxArmor);
+	exported.SetValue("maxAmmo1", data.maxAmmo[0]);
+	exported.SetValue("maxAmmo2", data.maxAmmo[1]);
+	exported.SetValue("maxAmmo3", data.maxAmmo[2]);
+	exported.SetValue("maxAmmo4", data.maxAmmo[3]);
+	exported.SetValue("maxAmmo5", data.maxAmmo[4]);
+	exported.SetValue("maxAmmo6", data.maxAmmo[5]);
+	exported.SetValue("buildable1", data.buildable[0]);
+	exported.SetValue("buildable2", data.buildable[1]);
+	exported.SetValue("buildable3", data.buildable[2]);
+	exported.SetValue("buildable4", data.buildable[3]);
+	exported.SetValue("buildable5", data.buildable[4]);
+	exported.SetValue("buildable6", data.buildable[5]);
 	return 0;
 }
 any Native_SetPlayerClassData(Handle plugin, int numArgs) {
 	PlayerClassData data;
 	TFClassType class = GetNativeCell(1);
-	int error;
-	if ((error = GetNativeArray(2, data, sizeof(PlayerClassData))) != SP_ERROR_NONE)
-		ThrowNativeError(error, "PlayerClassData array invalid or outdated");
+	StringMap imported = GetNativeCell(2);
+	LoadPCD(class, data);
+	if (imported.ContainsKey("maxSpeed")) imported.GetValue("maxSpeed", data.maxSpeed);
+	if (imported.ContainsKey("maxHealth")) imported.GetValue("maxHealth", data.maxHealth);
+	if (imported.ContainsKey("maxArmor")) imported.GetValue("maxArmor", data.maxArmor);
+	if (imported.ContainsKey("maxAmmo1")) imported.GetValue("maxAmmo1", data.maxAmmo[0]);
+	if (imported.ContainsKey("maxAmmo2")) imported.GetValue("maxAmmo2", data.maxAmmo[1]);
+	if (imported.ContainsKey("maxAmmo3")) imported.GetValue("maxAmmo3", data.maxAmmo[2]);
+	if (imported.ContainsKey("maxAmmo4")) imported.GetValue("maxAmmo4", data.maxAmmo[3]);
+	if (imported.ContainsKey("maxAmmo5")) imported.GetValue("maxAmmo5", data.maxAmmo[4]);
+	if (imported.ContainsKey("maxAmmo6")) imported.GetValue("maxAmmo6", data.maxAmmo[5]);
+	if (imported.ContainsKey("buildable1")) imported.GetValue("buildable1", data.buildable[0]);
+	if (imported.ContainsKey("buildable2")) imported.GetValue("buildable2", data.buildable[1]);
+	if (imported.ContainsKey("buildable3")) imported.GetValue("buildable3", data.buildable[2]);
+	if (imported.ContainsKey("buildable4")) imported.GetValue("buildable4", data.buildable[3]);
+	if (imported.ContainsKey("buildable5")) imported.GetValue("buildable5", data.buildable[4]);
+	if (imported.ContainsKey("buildable6")) imported.GetValue("buildable6", data.buildable[5]);
 	StorePCD(class, data);
 	return 0;
 }
