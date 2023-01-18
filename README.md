@@ -49,7 +49,7 @@ You can just remove class sections or entries that you want to keep on default v
 	//        "copy" "example"
 	//    }
 	
-	// supported keys: speed_max, health_max, armor_max, ammo_max_0, ... ammo_max_6
+	// supported keys: speed_max, health_max, armor_max, ammo_max_0, ... ammo_max_5, buildable_0, ... buildable_5
 	
 	scout {
 		speed_max 400
@@ -57,6 +57,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 32
 		ammo_max_1 36
 		ammo_max_2 100
+		buildable_0 4
+		buildable_1 4
+		buildable_2 4
 	}
 	sniper {
 		speed_max 300
@@ -64,6 +67,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 25
 		ammo_max_1 75
 		ammo_max_2 100
+		buildable_0 4
+		buildable_1 4
+		buildable_2 4
 	}
 	soldier {
 		speed_max 240
@@ -71,6 +77,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 20
 		ammo_max_1 32
 		ammo_max_2 100
+		buildable_0 4
+		buildable_1 4
+		buildable_2 4
 	}
 	demoman {
 		speed_max 280
@@ -78,6 +87,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 16
 		ammo_max_1 24
 		ammo_max_2 100
+		buildable_0 4
+		buildable_1 4
+		buildable_2 4
 	}
 	medic {
 		speed_max 320
@@ -85,6 +97,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 150
 		ammo_max_1 150
 		ammo_max_2 100
+		buildable_0 4
+		buildable_1 4
+		buildable_2 4
 	}
 	heavy {
 		speed_max 230
@@ -92,6 +107,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 200
 		ammo_max_1 32
 		ammo_max_2 100
+		buildable_0 4
+		buildable_1 4
+		buildable_2 4
 	}
 	pyro {
 		speed_max 300
@@ -99,6 +117,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 200
 		ammo_max_1 32
 		ammo_max_2 100
+		buildable_0 4
+		buildable_1 4
+		buildable_2 4
 	}
 	spy {
 		speed_max 320
@@ -106,6 +127,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 20
 		ammo_max_1 24
 		ammo_max_2 100
+		buildable_0 3
+		buildable_1 4
+		buildable_2 4
 	}
 	engineer {
 		speed_max 300
@@ -113,6 +137,9 @@ You can just remove class sections or entries that you want to keep on default v
 		ammo_max_0 32
 		ammo_max_1 200
 		ammo_max_2 200
+		buildable_0 2
+		buildable_1 0
+		buildable_2 1
 	}
 }
 ```
