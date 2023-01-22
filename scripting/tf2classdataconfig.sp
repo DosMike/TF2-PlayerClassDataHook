@@ -6,7 +6,7 @@
 #pragma newdecls required
 #pragma semicolon 1
 
-#define PLUGIN_VERSION "23w03a"
+#define PLUGIN_VERSION "23w03b"
 
 public Plugin myinfo = {
 	name = "[TF2] Player Class Data Configuration",
@@ -77,27 +77,33 @@ public void LoadConfig(int replyTo) {
 				}
 			}
 			
-			if (regenConfig.JumpToKey("speed_max"))
+			if (regenConfig.JumpToKey("speed_max")) {
 				data.SetValue("maxSpeed", regenConfig.GetFloat(NULL_STRING));
-			regenConfig.GoBack();
-			if (regenConfig.JumpToKey("health_max"))
+				regenConfig.GoBack();
+			}
+			if (regenConfig.JumpToKey("health_max")) {
 				data.SetValue("maxHealth", regenConfig.GetNum(NULL_STRING));
-			regenConfig.GoBack();
-			if (regenConfig.JumpToKey("armor_max"))
+				regenConfig.GoBack();
+			}
+			if (regenConfig.JumpToKey("armor_max")) {
 				data.SetValue("maxArmor", regenConfig.GetNum(NULL_STRING));
-			regenConfig.GoBack();
+				regenConfig.GoBack();
+			}
 			
 			for (int ammotype=0; ammotype<6; ammotype+=1) {
+				regenConfig.GetSectionName(tmp, sizeof(tmp));
 				Format(tmp,sizeof(tmp),"ammo_max_%i", ammotype);
-				if (regenConfig.JumpToKey(tmp))
+				if (regenConfig.JumpToKey(tmp)) {
 					data.SetMaxAmmo(ammotype+1, regenConfig.GetNum(NULL_STRING));
-				regenConfig.GoBack();
+					regenConfig.GoBack();
+				}
 			}
 			for (int buildtype=0; buildtype<6; buildtype+=1) {
 				Format(tmp,sizeof(tmp),"buildable_%i", buildtype);
-				if (regenConfig.JumpToKey(tmp))
+				if (regenConfig.JumpToKey(tmp)) {
 					data.SetBuildable(buildtype+1, view_as<TFObjectType>(regenConfig.GetNum(NULL_STRING)));
-				regenConfig.GoBack();
+					regenConfig.GoBack();
+				}
 			}
 			
 			if (clz == TFClass_Unknown) {
@@ -109,16 +115,17 @@ public void LoadConfig(int replyTo) {
 				data.Store();
 			}
 			
-			if (replyTo)
-				ReplyToCommand(replyTo, "[TF2 PlayerClassData] %s : spd %.0f hp %i ammo [ %i %i %i %i %i %i ] build [ %i %i %i %i %i %i ]",
-						tf2classnames[clz], data.MaxSpeed, data.MaxHealth,
-						data.GetMaxAmmo(1), data.GetMaxAmmo(2), data.GetMaxAmmo(3), data.GetMaxAmmo(4), data.GetMaxAmmo(5), data.GetMaxAmmo(6),
-						data.GetBuildable(1), data.GetBuildable(2), data.GetBuildable(3), data.GetBuildable(4), data.GetBuildable(5), data.GetBuildable(6));
-			else
-				PrintToServer("[TF2 PlayerClassData] %s : spd %.0f hp %i ammo [ %i %i %i %i %i %i ] build [ %i %i %i %i %i %i ]",
-						tf2classnames[clz], data.MaxSpeed, data.MaxHealth,
-						data.GetMaxAmmo(1), data.GetMaxAmmo(2), data.GetMaxAmmo(3), data.GetMaxAmmo(4), data.GetMaxAmmo(5), data.GetMaxAmmo(6),
-						data.GetBuildable(1), data.GetBuildable(2), data.GetBuildable(3), data.GetBuildable(4), data.GetBuildable(5), data.GetBuildable(6));
+			regenConfig.GoBack();
+//			if (replyTo)
+//				ReplyToCommand(replyTo, "[TF2 PlayerClassData] %s : spd %.0f hp %i ammo [ %i %i %i %i %i %i ] build [ %i %i %i %i %i %i ]",
+//						tf2classnames[clz], data.MaxSpeed, data.MaxHealth,
+//						data.GetMaxAmmo(1), data.GetMaxAmmo(2), data.GetMaxAmmo(3), data.GetMaxAmmo(4), data.GetMaxAmmo(5), data.GetMaxAmmo(6),
+//						data.GetBuildable(1), data.GetBuildable(2), data.GetBuildable(3), data.GetBuildable(4), data.GetBuildable(5), data.GetBuildable(6));
+//			else
+//				PrintToServer("[TF2 PlayerClassData] %s : spd %.0f hp %i ammo [ %i %i %i %i %i %i ] build [ %i %i %i %i %i %i ]",
+//						tf2classnames[clz], data.MaxSpeed, data.MaxHealth,
+//						data.GetMaxAmmo(1), data.GetMaxAmmo(2), data.GetMaxAmmo(3), data.GetMaxAmmo(4), data.GetMaxAmmo(5), data.GetMaxAmmo(6),
+//						data.GetBuildable(1), data.GetBuildable(2), data.GetBuildable(3), data.GetBuildable(4), data.GetBuildable(5), data.GetBuildable(6));
 		}
 		TF2_UpdatePlayerClassDataChanged();
 	}
