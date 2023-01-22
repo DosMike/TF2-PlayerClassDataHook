@@ -7,6 +7,7 @@ This includes the default values, per class, for:
 * max health
 * max armor (unused in TF2)
 * max ammo (per type; primary, secondary, metal, idk what 4-7 do)
+* builables (TFObjectType, 4 for none)
 
 ## Why is this interesting?
 
@@ -17,7 +18,8 @@ If you want to rebalance the game, you can now do so using the base values, keep
 with any items or other plugins that apply attributes to the player without things breaking.
 
 If you want to set the maximum speed above 520 you will need another plugin that removes that specific
-hardcoded limit: [TF2 Move Speed Unlocker](https://forums.alliedmods.net/showthread.php?p=2659562)
+hardcoded limit: [TF2 Move Speed Unlocker](https://forums.alliedmods.net/showthread.php?p=2659562) or 
+[tf_maxspeed_patch](https://github.com/FlaminSarge/tf_maxspeed_patch)
 
 ## Installing
 
